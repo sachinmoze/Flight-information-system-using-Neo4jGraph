@@ -1,0 +1,219 @@
+#cypher code for airport
+
+CREATE (a1:Airport {id:'1',code:'Mum',icao:'BOM',city:'Mumbai',desc:'Mumbai International Airport',region:'india',runways:2,longest:3448,elev:1100,country:'India',continent:'Asia'})
+
+CREATE (a2:Airport {id:'2',code:'NYK',icao:'KJFK',city:'New York',desc:'John F. Kennedy International Airport',region:'USA',runways:4,longest:14511,elev:2000,country:'United States of America',continent:'North America'})
+
+CREATE (a3:Airport {id:'3',code:'ORD',icao:'KORD',city:'Chicago',desc:'Chicago OHare International Airport',region:'USA',runways:8,longest:3436,elev:1126,country:'United States of America',continent:'North America'})
+
+CREATE (a4:Airport {id:'4',code:'LAS',icao:'KLAS',city:'Las Vegas',desc:'Harry Reid International Airport'
+,region:'USA',runways:4,longest:4424,elev:1236,country:'United States of America',continent:'North America'})
+
+CREATE (a5:Airport {id:'5',code:'LAX',icao:'KLAX',city:'Los Angeles',desc:'Los Angeles International Airport',region:'USA',runways:4,longest:3746,elev:1026,country:'United States of America',continent:'North America'})
+
+CREATE (a6:Airport {id:'6',code:'YYZ',icao:'CYYZ',city:'Toronto ',desc:'Lester B. Pearson International Airport',region:'Canada',runways:5,longest:3389,elev:1730,country:'Canada',continent:'Asia'})
+
+CREATE (a7:Airport {id:'7',code:'Lon',icao:'EGLL',city:'London',desc:'London City Airport',region:'Europe',runways:1,longest:1508,elev:600,country:'United Kingdom',continent:'EUROPE'})
+
+CREATE (a8:Airport {id:'8',code:'MAD',icao:'LEMD',city:'Madrid',desc:'Adolfo Suárez Madrid–Barajas Airport',region:'Europe',runways:3,longest:4348,elev:610,country:'Spain',continent:'EUROPE'})
+
+
+CREATE (a9:Airport {id:'9',code:'CDG',icao:'LFPG',city:'Paris',desc:'Paris-Charles de Gaulle Airport',region:'Europe',runways:4,longest:4215,elev:119,country:'France',continent:'EUROPE'})
+
+CREATE (a10:Airport {id:'10',code:'ATH',icao:'LGAV',city:'Athens',desc:'Athens International Airport ',region:'Europe',runways:2,longest:4000,elev:308,country:'Greece',continent:'EUROPE'})
+
+
+CREATE (a11:Airport {id:'11',code:'FCO',icao:'LIRF',city:'Rome',desc:'Leonardo da Vinci Fiumicino International Airport',region:'Europe',runways:4,longest:3900,elev:500,country:'Italy',continent:'EUROPE'})
+
+
+
+CREATE (a12:Airport {id:'12',code:'IST',icao:'LTFM',city:'Istanbul ',desc:'Istanbul Airport',region:'Southeast Europe',runways:2,longest:4100,elev:1000,country:'Turkey',continent:'EUROPE'})
+
+
+CREATE (a13:Airport {id:'13',code:'SIN',icao:'WSSS',city:'singapore  ',desc:'Changi Airport',region:'South Asia',runways:2,longest:4000,elev:660,country:'Singapore',continent:'Asia'})
+
+
+CREATE (a14:Airport {id:'14',code:'SYD',icao:'YSSY',city:'Sydney',desc:'Sydney Kingsford Smith Airport',region:'Australia',runways:3,longest:4400,elev:2100,country:'Australia',continent:'Australia'})
+
+
+
+CREATE (a15:Airport {id:'15',code:'MEL',icao:'YMML',city:'Melbourne',desc:'Tullamarine Airport',region:'Australia',runways:2,longest:3657,elev:1320,country:'Australia',continent:'Australia'})
+
+
+
+______________________________________________________________________
+creating city
+CREATE (a16:Country {id:'16',code:'IND', desc:'India',continent:'Asia'})
+CREATE (a17:Country {id:'17',code:'USA', desc:'United States of America', continent:'North America'})
+CREATE (a18:Country {id:'18',code:'CAN', desc:'Canada',continent:'North America'})
+CREATE (a19:Country {id:'19',code:'UK', desc:'United Kingdom',continent:'EUROPE'})
+CREATE (a20:Country {id:'20',code:'SP', desc:'Spain',continent:'EUROPE'})
+CREATE (a21:Country {id:'21',code:'FRA', desc:'France',continent:'EUROPE'})
+CREATE (a22:Country {id:'22',code:'GRE', desc:'Greece',continent:'EUROPE'})
+CREATE (a23:Country {id:'23',code:'Ita', desc:'Italy',continent:'EUROPE'})
+CREATE (a24:Country {id:'24',code:'Tur', desc:'Turkey',continent:'EUROPE'})
+CREATE (a25:Country {id:'25',code:'Sin', desc:'Singapore',continent:'Asia'})
+CREATE (a26:Country {id:'26',code:'Aus', desc:'Australia',continent:'Australia'})
+
+
+__________________________________________________________________________
+Creating continent
+
+CREATE (a27:Continent {id:'27',code:'EU', desc:'EUROPE'})
+
+CREATE (a29:Continent {id:'29',code:'NA', desc:'North America'})
+
+CREATE (a31:Continent {id:'31',code:'AS', desc:'Asia'})
+CREATE (a32:Continent {id:'32',code:'AU', desc:'Australia'})
+
+
+_____________________________________________________________________________
+HAS_ROUTE Relationship
+_____________________________________________________________________________
+WITH ['Mum', 'NYK', 'ORD', 'LAS', 'LAX', 'YYZ', 'Lon', 'MAD', 'CDG', 'ATH', 'FCO', 'IST', 'SIN', 'SYD', 'MEL'] AS codes
+
+// Create 100 additional relationships
+UNWIND RANGE(1, 100) AS i
+WITH codes
+// Randomly select two airports
+WITH codes, codes[TOINTEGER(RAND()*SIZE(codes))] AS ap1, codes[TOINTEGER(RAND()*SIZE(codes))] AS ap2
+// Ensure ap1 and ap2 are not the same airport
+WHERE ap1 <> ap2
+// Create the relationship in both directions
+MATCH (a1:Airport {code: ap1}), (a2:Airport {code: ap2})
+CREATE (a1)-[:HAS_ROUTE]->(a2), (a2)-[:HAS_ROUTE]->(a1)
+
+
+
+______________________________________________________________________________
+
+IN_COUNTRY Relationship
+
+///Connect airports with their respective countries based on country codes
+MATCH (a:Airport), (c:Country)
+WHERE a.country = c.desc
+MERGE (a)-[:IN_COUNTRY]->(c)
+
+
+_______________________________________________________________________________
+ON_CONTINENT_relationship
+#matching continent with country
+
+MATCH (a:Country), (c:Continent)
+WHERE c.desc = a.continent
+MERGE (a)-[:ON_CONTINENT]->(c)
+
+___________________________________
+ON_CONTINENT_relationship
+#matching continent with Airport
+
+MATCH (a:Continent), (c:Airport)
+WHERE a.desc = c.continent
+MERGE (a)-[:ON_CONTINENT]->(c)
+__________________________________
+
+
+
+///pageRank
+
+CALL gds.pageRank.stream({
+  nodeProjection: {
+    City: {
+      label: 'Airport'
+    }
+  },
+  relationshipProjection: {
+    RELATIONSHIP_TYPE: {
+      type: 'HAS_ROUTE',
+      orientation: 'UNDIRECTED'
+    }
+  },
+  maxIterations: 20,
+  dampingFactor: 0.85
+})
+
+YIELD nodeId, score
+RETURN gds.util.asNode(nodeId).desc AS airport, score
+ORDER BY score DESC
+
+
+____________________________________
+CALL gds.pageRank.write({
+  nodeProjection: {
+    Airport: {
+      label: 'Airport'
+    }
+  },
+  relationshipProjection: {
+    HAS_ROUTE: {
+      type: 'HAS_ROUTE',
+      orientation: 'UNDIRECTED'
+    }
+  },
+  maxIterations: 20,
+  dampingFactor: 0.85,
+  writeProperty: 'PageRank'
+})
+
+MATCH (a:Airport)
+RETURN a.desc AS airport, a.PageRank AS score
+ORDER BY a.PageRank DESC
+____________________________________
+
+##Degree 
+
+CALL gds.degree.write({
+nodeProjection: 'Airport',
+relationshipProjection: {
+HAS_ROUTE_TO: {
+type: 'HAS_ROUTE',
+orientation: 'UNDIRECTED'
+}
+},
+writeProperty: 'degreeCentrality'
+});
+
+
+MATCH (n:Airport)
+RETURN split(n.desc, '_')[0] AS routes, size([(n)--() | 1]) AS DegreeCentrality
+ORDER BY DegreeCentrality DESC
+
+______________________________________
+
+CALL gds.graph.create('flightAndCity', 'Airport', 'HAS_ROUTE')
+
+
+CALL gds.betweenness.write('flightAndCity', { writeProperty: 'betweenness' })
+YIELD centralityDistribution, nodePropertiesWritten
+RETURN centralityDistribution.min AS minimumScore, centralityDistribution.mean AS meanScore, nodePropertiesWritten
+
+
+
+
+_______________
+
+CALL gds.eigenvector.stream('flightAndCity') 
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS Routes, score
+RETURN Routes.desc AS Routes, score
+
+
+______________________________________________________________________
+
+
+
+MATCH (a:Airport)-[:HAS_ROUTE]->(:Airport)
+WITH a, count(*) AS numberOfRoutes
+RETURN min(numberOfRoutes), max(numberOfRoutes), avg(numberOfRoutes), stdev(numberOfRoutes)
+
+
+_____________________________________________________________________________
+
+MATCH p = shortestPath((start:Airport {desc: 'Los Angeles International Airport'})-[:HAS_ROUTE*]->(end:Airport {desc: "Tullamarine Airport"}))
+RETURN [node in nodes(p) | node.desc] AS route, length(p) AS distance
+ORDER BY distance ASC
+LIMIT 1
+
+
+
+
