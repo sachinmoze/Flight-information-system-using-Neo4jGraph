@@ -2,6 +2,9 @@
 The aim of this project is to provide information about flights and which flight can be most beneficial to travel rather than booking any of the flights to travel from source to destination.
 The users can type their source and destination locations and based on that; it will show which flight booking route to be followed with closest route.
 
+![image](https://github.com/sachinmoze/Flight-information-system-using-Neo4jGraph/assets/83491841/349a38c2-0dce-474e-b536-54e0cc62e616)
+
+
 ## How to Run the Project
 
 Follow these steps to run the Flight Information System application:
