@@ -1,4 +1,6 @@
 # Flight-information-system-using-Neo4jGraph
+The aim of this project is to provide information about flights and which flight can be most beneficial to travel rather than booking any of the flights to travel from source to destination.
+The users can type their source and destination locations and based on that; it will show which flight booking route to be followed with closest route.
 
 ## How to Run the Project
 
